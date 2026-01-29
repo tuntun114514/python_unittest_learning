@@ -1,0 +1,18 @@
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Windows 临时文件
+Thumbs.db
+Desktop.ini
+新建*.txt
+*副本*
+
+# PyCharm/IDE
+.idea/
+*.iml
+
+# 虚拟环境
+venv/
+.env/
