@@ -4,7 +4,6 @@ import os
 import sys
 from pathlib import Path
 
-# 获取项目根目录（pycharm兼容处理）
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
@@ -14,36 +13,43 @@ from file_processor.config import Config, ConfigError
 
 class TestConfig(unittest.TestCase):
 
+    def setUp(self):
+        """创建临时文件路径（不保持打开，避免Windows句柄问题）"""
+        # mkstemp 创建文件后立即关闭句柄，只保留路径
+        fd, self.temp_path = tempfile.mkstemp(suffix='.yaml', text=True)
+        os.close(fd)  # 立即关闭！这是关键
+
+    def tearDown(self):
+        """删除临时文件"""
+        if os.path.exists(self.temp_path):
+            os.unlink(self.temp_path)
+
     def test_file_not_exists(self):
         """测试：配置文件不存在时抛出异常"""
+        # 删除刚才创建的临时文件，让它真的不存在
+        os.unlink(self.temp_path)
+
         with self.assertRaises(ConfigError) as context:
-            Config("不存在的文件.yaml")
+            Config(self.temp_path)
         self.assertIn("不存在", str(context.exception))
 
     def test_missing_version(self):
         """测试：配置缺少version字段时抛出异常"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False, encoding='utf-8') as f:
-            f.write("name: test\n")  # 写了name，但没写version
-            temp_path = f.name
+        # 需要自己打开写入（因为setUp没保持打开）
+        with open(self.temp_path, 'w', encoding='utf-8') as f:
+            f.write("name: test\n")
 
-        try:
-            with self.assertRaises(ConfigError) as context:
-                Config(temp_path)
-            self.assertIn("version", str(context.exception))
-        finally:
-            os.unlink(temp_path)
+        with self.assertRaises(ConfigError) as context:
+            Config(self.temp_path)
+        self.assertIn("version", str(context.exception))
 
     def test_valid_config(self):
         """测试：正常读取配置"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False, encoding='utf-8') as f:
-            f.write("version: 1.0\nname: my_processor\n")
-            temp_path = f.name
+        with open(self.temp_path, 'w', encoding='utf-8') as f:
+            f.write("version: 1.0\nname: processor\n")
 
-        try:
-            config = Config(temp_path)
-            self.assertEqual(config.get_version(), 1.0)
-        finally:
-            os.unlink(temp_path)
+        config = Config(self.temp_path)
+        self.assertEqual(config.get_version(), 1.0)
 
 
 if __name__ == '__main__':
