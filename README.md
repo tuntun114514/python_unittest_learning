@@ -15,6 +15,8 @@
 ### 安装依赖
 ```bash
 pip install pyyaml
+``` 
+
 
 ## Day 2: 重构与踩坑记录（2026/1/30）
 
