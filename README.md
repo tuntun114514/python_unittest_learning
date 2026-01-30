@@ -60,7 +60,7 @@ def test_xxx(self):
         finally:
             os.unlink(f.name)  # 每个测试都重复写，且句柄未完全释放
 ```
-**重构后（健壮，跨平台兼容）：
+**重构后（健壮，跨平台兼容）**：
 
 ```python 
 def setUp(self):
@@ -75,3 +75,53 @@ def test_xxx(self):
     with open(self.temp_path, 'w') as f:
         # 只写业务逻辑，不操心资源清理
 ```
+
+
+### 3. Mock 测试实战
+
+**为什么要 Mock？**  
+测试"过滤大于 1GB 的文件"时，不需要真的创建 1GB 文件：
+- 节省时间和磁盘空间
+- 测试更稳定（不依赖真实文件系统）
+- 可以模拟极端情况（如磁盘错误）
+
+**核心技巧**：
+```python
+@patch('file_processor.filters.os.path.getsize')
+@patch.object(Path, 'exists', return_value=True)
+def test_filter_by_size(self, mock_exists, mock_getsize):
+    mock_getsize.return_value = 500  # 假装文件 500 字节
+    # ... 测试逻辑
+关键概念：
+-@patch：把目标函数替换为 Mock 对象
+-return_value：设定假返回值
+-assert_called_once_with：验证函数确实被调用（确保逻辑覆盖）
+4. 测试覆盖情况
+-test_config.py: 3/3 测试通过（Fixture 重构）
+-test_filters.py: 3/3 测试通过（含 2 个 Mock 测试）
+-test_nonexistent_file：真实测试，验证文件不存在逻辑
+-test_filter_by_size：Mock 测试，验证小文件被过滤
+-test_large_file_pass：Mock 测试，验证大文件通过
+**下一步计划（Day 3）**
+-[ ] GitHub Actions CI/CD：配置自动测试流水线
+-[ ] 测试覆盖率报告：使用 coverage.py 生成可视化报告
+-[ ] 批量重命名功能：实现完整的文件批处理逻辑（集成测试）
+## 🎯 完成后的总测试
+
+运行全部测试，确认 6/6 通过：
+```bash
+python -m unittest discover -v
+···
+##输出结果
+
+test_file_not_exists ... ok
+test_missing_version ... ok
+test_valid_config ... ok
+test_filter_by_size ... ok
+test_large_file_pass ... ok
+test_nonexistent_file ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.015s
+
+OK
