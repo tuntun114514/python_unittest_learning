@@ -59,4 +59,19 @@ def test_xxx(self):
             # ...
         finally:
             os.unlink(f.name)  # 每个测试都重复写，且句柄未完全释放
+```
+**重构后（健壮，跨平台兼容）：
 
+```python 
+def setUp(self):
+    fd, self.temp_path = tempfile.mkstemp(suffix='.yaml')
+    os.close(fd)  # 关键：立即释放 Windows 句柄
+
+def tearDown(self):
+    if os.path.exists(self.temp_path):
+        os.unlink(self.temp_path)  # 现在可以安全删除
+
+def test_xxx(self):
+    with open(self.temp_path, 'w') as f:
+        # 只写业务逻辑，不操心资源清理
+```
