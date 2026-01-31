@@ -1,3 +1,5 @@
+[![Tests](https://github.com/tuntun114514/python_unittest_learning/actions/workflows/python-test.yml/badge.svg)](https://github.com/tuntun114514/python_unittest_learning/actions)
+
 # python_unittest_learning
 
 本项目用于系统学习 Python 标准库 unittest，涵盖测试用例编写、Fixture 使用、测试套件组织及 Mock 对象等核心知识点，适合单元测试初学者
@@ -92,23 +94,25 @@ def test_xxx(self):
 def test_filter_by_size(self, mock_exists, mock_getsize):
   mock_getsize.return_value = 500  # 假装文件 500 字节
 ```    
-# ... 测试逻辑
+###测试逻辑
 **关键概念**：
--@patch：把目标函数替换为 Mock 对象
--return_value：设定假返回值
--assert_called_once_with：验证函数确实被调用（确保逻辑覆盖）
+- `@patch`：把目标函数替换为 Mock 对象
+- `return_value`：设定假返回值  
+- `assert_called_once_with`：验证函数确实被调用（确保逻辑覆盖）
 
-#4. 测试覆盖情况
--test_config.py: 3/3 测试通过（Fixture 重构）
--test_filters.py: 3/3 测试通过（含 2 个 Mock 测试）
--test_nonexistent_file：真实测试，验证文件不存在逻辑
--test_filter_by_size：Mock 测试，验证小文件被过滤
--test_large_file_pass：Mock 测试，验证大文件通过
+
+#### 4. 测试覆盖情况
+
+- `test_config.py`: 3/3 测试通过（Fixture 重构）
+- `test_filters.py`: 3/3 测试通过（含 2 个 Mock 测试）
+  - `test_nonexistent_file`：真实测试，验证文件不存在逻辑
+  - `test_filter_by_size`：Mock 测试，验证小文件被过滤
+  - `test_large_file_pass`：Mock 测试，验证大文件通过
 
 **下一步计划（Day 3）**
-- GitHub Actions CI/CD：配置自动测试流水线
-- 测试覆盖率报告：使用 coverage.py 生成可视化报告
-- 批量重命名功能：实现完整的文件批处理逻辑（集成测试）
+- [ ] **GitHub Actions CI/CD**：配置自动测试流水线
+- [ ] **测试覆盖率报告**：使用 coverage.py 生成可视化报告
+- [ ] **批量重命名功能**：实现完整的文件批处理逻辑（集成测试）
 
 ##完成后的总测试
 运行全部测试，确认 6/6 通过：
@@ -116,14 +120,39 @@ def test_filter_by_size(self, mock_exists, mock_getsize):
 bash
 python -m unittest discover -v
 ```
-##输出结果：
--test_file_not_exists ... ok
--test_missing_version ... ok
--test_valid_config ... ok
--test_filter_by_size ... ok
--test_large_file_pass ... ok
--test_nonexistent_file ... ok
+输出结果：
+test_file_not_exists ... ok
+test_missing_version ... ok
+test_valid_config ... ok
+test_filter_by_size ... ok
+test_large_file_pass ... ok
+test_nonexistent_file ... ok
 ----------------------------------------------------------------------
 Ran 6 tests in 0.015s
+
+
+## Day 3: CI/CD 自动化测试（2026/1/31）
+
+### 今日完成
+- [x] **配置 GitHub Actions**：实现自动化测试流水线
+  - 每次 push/pull_request 自动触发测试
+  - 使用 Ubuntu 环境 + Python 3.12
+  - 6 个测试全部通过 ✅（10 秒内完成）
+
+### 关键技术点
+
+#### GitHub Actions 工作流配置
+```yaml
+# .github/workflows/python-test.yml
+name: Python Tests
+on: [push, pull_request]  # 触发条件：推送或提 PR 时自动运行
+jobs:
+  test:
+    runs-on: ubuntu-latest  # 运行环境：云端 Linux 虚拟机
+    steps:
+      - uses: actions/checkout@v4      # 拉取代码
+      - uses: actions/setup-python@v5  # 安装 Python 3.12
+      - run: pip install pyyaml        # 安装依赖
+      - run: python -m unittest discover -v  # 执行测试
 
 OK
