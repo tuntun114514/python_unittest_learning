@@ -121,6 +121,7 @@ bash
 python -m unittest discover -v
 ```
 输出结果：
+```
 test_file_not_exists ... ok
 test_missing_version ... ok
 test_valid_config ... ok
@@ -129,7 +130,7 @@ test_large_file_pass ... ok
 test_nonexistent_file ... ok
 ----------------------------------------------------------------------
 Ran 6 tests in 0.015s
-
+```
 
 ## Day 3: CI/CD 自动化测试（2026/1/31）
 
@@ -156,3 +157,5 @@ jobs:
       - run: python -m unittest discover -v  # 执行测试
 
 OK
+```
+
