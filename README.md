@@ -159,3 +159,34 @@ jobs:
 OK
 ```
 
+## Day 4: 批量重命名与集成测试（2026/2/2）
+
+### 今日完成
+- [x] **实现 Renamer 类**：完成文件批处理核心功能
+  - `rename_with_pattern()`：正则表达式批量替换（如 `report_2024.txt` → `year_2024_report.txt`）
+  - `add_sequence()`：自动添加序号（001, 002, 003...）
+  - `dry_run` 模式：只预览不执行，防止误操作（"防手抖"设计）
+- [x] **集成测试**（Integration Test）：使用真实临时目录操作真实文件
+  - 不再使用 Mock，验证真实文件系统交互（创建 → 重命名 → 内容验证）
+  - 使用 `tempfile.TemporaryDirectory()` 实现测试隔离
+- [x] **测试调试技巧**：掌握排查测试失败的方法（打印调试、repr、断言信息完善）
+
+### 关键技术点
+
+#### 1. 集成测试 vs Mock 测试对比
+
+| 测试类型 | 适用场景 | 优点 | 缺点 | 本日示例 |
+|---------|---------|------|------|---------|
+| **Mock 测试** | 隔离外部依赖 | 快速、不依赖环境、安全 | 不验证真实交互 | Day 2 的 FileFilter（假装文件大小） |
+| **集成测试** | 验证真实行为 | 验证完整流程、发现环境相关问题 | 慢、需要清理资源 | 今天的 Renamer（真的创建并重命名文件） |
+
+#### 2. dry_run 模式（防御性编程）
+这是生产环境常用的安全设计：
+```python
+renamer = Renamer(dry_run=True)   # 先预览，看看会改哪些文件
+preview = renamer.rename_with_pattern(...)  
+print(preview)  # ['report_2024.txt -&gt; year_2024_report.txt', ...]
+
+# 确认无误后再执行
+renamer = Renamer(dry_run=False)  # 动真格的
+renamer.rename_with_pattern(...)  # 真正修改
