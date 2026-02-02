@@ -188,5 +188,5 @@ preview = renamer.rename_with_pattern(...)
 print(preview)  # ['report_2024.txt -&gt; year_2024_report.txt', ...]
 
 # 确认无误后再执行
-renamer = Renamer(dry_run=False)  # 动真格的
+renamer = Renamer(dry_run=False)  
 renamer.rename_with_pattern(...)  # 真正修改
