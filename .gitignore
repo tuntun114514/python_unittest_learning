@@ -16,3 +16,6 @@ Desktop.ini
 # 虚拟环境
 venv/
 .env/
+
+htmlcov/
+.coverage
