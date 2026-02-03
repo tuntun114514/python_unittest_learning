@@ -111,8 +111,9 @@ def test_xxx(self):
 @patch.object(Path, 'exists', return_value=True)
 def test_filter_by_size(self, mock_exists, mock_getsize):
   mock_getsize.return_value = 500  # 假装文件 500 字节
-```    
-###测试逻辑
+```   
+
+
 **关键概念**：
 - `@patch`：把目标函数替换为 Mock 对象
 - `return_value`：设定假返回值  
@@ -209,6 +210,7 @@ print(preview)  # ['report_2024.txt -&gt; year_2024_report.txt', ...]
 renamer = Renamer(dry_run=False)  
 renamer.rename_with_pattern(...)  # 真正修改
 
+```
 ## 项目完结（Day 5-7）
 ### 今日完成
 - [x] **测试覆盖率 96%**：使用 coverage.py 生成报告，超过 80% 优秀标准
@@ -223,4 +225,4 @@ python cli.py ./文件夹 --pattern "test_(\\d+)" --replace "backup_\\1" --dry-r
 # 本地安装后
 pip install -e .
 file-processor ./文件夹 --pattern "test" --replace "backup"
-
+```
