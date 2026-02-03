@@ -1,23 +1,40 @@
 [![Tests](https://github.com/tuntun114514/python_unittest_learning/actions/workflows/python-test.yml/badge.svg)](https://github.com/tuntun114514/python_unittest_learning/actions)
 [![Coverage](https://img.shields.io/badge/coverage-96%25-brightgreen)](./)
 
+# File Processor - 智能文件批处理工具
 
-本项目用于系统学习 Python 标准库 unittest，涵盖测试用例编写、Fixture 使用、测试套件组织及 Mock 对象等核心知识点，适合单元测试初学者
+本项目从学习 Python unittest 起步，逐步演进为功能完整的文件批处理工具，涵盖配置管理、文件过滤、批量重命名等核心功能，配套完整的自动化测试体系（10 个测试，覆盖率 96%）。
 
-## 当前进度
+## 🚀 功能特性
+
+- ✅ **YAML 配置管理**：支持外部配置文件
+- ✅ **文件过滤**：按大小筛选（Mock 测试）
+- ✅ **批量重命名**：正则表达式替换、自动添加序号
+- ✅ **dry_run 模式**：先预览再执行，防止误操作
+- ✅ **CLI 工具**：命令行直接调用
+- ✅ **自动化测试**：10 个测试，GitHub Actions CI/CD
+- ✅ **覆盖率 96%**：超过行业优秀标准（80%）
+
+## 📦 安装
+
+```bash
+# 克隆项目
+git clone https://github.com/tuntun114514/python_unittest_learning.git
+cd python_unittest_learning
+
+# 安装依赖
+pip install pyyaml
+
+# 本地安装（可选）
+pip install -e .
+
+
 
 - [x] **Day 1: 项目初始化与配置管理**
   - 实现 `Config` 类：YAML 配置文件读取与验证
   - 掌握 `assertEqual`, `assertRaises` 断言
   - 掌握 `tempfile` 临时文件隔离测试
   - 编写 3 个测试用例，全部通过
-
-## 快速开始
-
-### 安装依赖
-```bash
-pip install pyyaml
-``` 
 
 
 ## Day 2: 重构与踩坑记录（2026/1/30）
@@ -190,3 +207,19 @@ print(preview)  # ['report_2024.txt -&gt; year_2024_report.txt', ...]
 # 确认无误后再执行
 renamer = Renamer(dry_run=False)  
 renamer.rename_with_pattern(...)  # 真正修改
+
+## 项目完结（Day 5-7）
+### 今日完成
+- [x] **测试覆盖率 96%**：使用 coverage.py 生成报告，超过 80% 优秀标准
+- [x] **CLI 工具**：创建 cli.py，支持命令行 `python cli.py 目录 --pattern xxx --replace yyy --dry-run`
+- [x] **打包发布**：setup.py 支持 `pip install -e .` 本地安装
+
+### 使用示例
+```bash
+# 命令行
+python cli.py ./文件夹 --pattern "test_(\\d+)" --replace "backup_\\1" --dry-run
+
+# 本地安装后
+pip install -e .
+file-processor ./文件夹 --pattern "test" --replace "backup"
+
