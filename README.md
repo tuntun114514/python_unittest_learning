@@ -1,5 +1,6 @@
 [![Tests](https://github.com/tuntun114514/python_unittest_learning/actions/workflows/python-test.yml/badge.svg)](https://github.com/tuntun114514/python_unittest_learning/actions)
 [![Coverage](https://img.shields.io/badge/coverage-96%25-brightgreen)](./)
+[![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 
 # File Processor - 智能文件批处理工具
 
@@ -28,7 +29,7 @@ pip install pyyaml
 # 本地安装（可选）
 pip install -e .
 
-
+```
 
 - [x] **Day 1: 项目初始化与配置管理**
   - 实现 `Config` 类：YAML 配置文件读取与验证
